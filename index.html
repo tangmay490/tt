@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#000000">
+ <meta charset="UTF-8">
 <title>🧪 SCIENCE ADVENTURE : ผจญภัยโลกวิทยาศาสตร์</title>
 <style>
   * { box-sizing: border-box; }
@@ -1149,5 +1151,15 @@ function renderGameOver() {
 
 render();
 </script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then((reg) => console.log('SW Connected!', reg.scope))
+        .catch((err) => console.error('SW Error:', err));
+    });
+  }
+</script>
+
 </body>
 </html>

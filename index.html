@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>🧪 SCIENCE ADVENTURE : ผจญภัยโลกวิทยาศาสตร์</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', 'Tahoma', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    min-height: 100vh;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+  #app {
+    width: 100%;
+    max-width: 700px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 0 40px rgba(0,255,255,0.15);
+    backdrop-filter: blur(6px);
+  }
+  h1 {
+    text-align: center;
+    font-size: 1.5em;
+    margin-bottom: 4px;
+    background: linear-gradient(90deg,#00f2fe,#4facfe,#00f2fe);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .subtitle { text-align:center; opacity:0.8; margin-bottom:20px; font-size:0.9em;}
+  .hud {
+    display: flex;
+    justify-content: space-between;
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    padding: 10px 16px;
+    margin-bottom: 18px;
+    font-size: 0.9em;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .hud div { display:flex; align-items:center; gap:6px; }
+  .card {
+    background: rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .mission-title { font-size: 1.2em; margin-bottom: 8px; }
+  .mission-desc { opacity: 0.85; margin-bottom: 14px; font-size: 0.95em; }
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 0.95em;
+    font-weight: 600;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  button:hover { transform: translateY(-2px); }
+  button:disabled { cursor: default; }
+  .btn-main {
+    background: linear-gradient(90deg,#00c6ff,#0072ff);
+    color: white;
+    width: 100%;
+    margin: 6px 0;
+  }
+  .option-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    margin: 6px 0;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .option-btn:hover { background: rgba(0,198,255,0.3); }
+  .option-btn.correct { background: #2ecc71 !important; color:#000; }
+  .option-btn.wrong { background: #e74c3c !important; }
+  .nav-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .feedback { margin-top: 10px; font-weight: bold; min-height: 24px; }
+  .speech-bubble {
+    margin-top: 8px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 0.95em;
+    font-style: italic;
+    display: inline-block;
+  }
+  .speech-good { background: rgba(46,204,113,0.2); border: 1px solid #2ecc71; }
+  .speech-bad { background: rgba(231,76,60,0.2); border: 1px solid #e74c3c; }
+  .progress-bar {
+    background: rgba(255,255,255,0.15);
+    border-radius: 8px;
+    height: 10px;
+    overflow: hidden;
+    margin: 10px 0;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg,#00f2fe,#4facfe);
+    transition: width 0.3s;
+  }
+  .match-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .match-col button {
+    width: 100%;
+    margin: 5px 0;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .match-col button.selected { background: #4facfe; color:#000; }
+  .match-col button.matched { background: #2ecc71; color:#000; opacity:0.7; cursor:default; }
+  .center-text { text-align: center; }
+  .badge {
+    display:inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: rgba(0,255,150,0.2);
+    border: 1px solid #2ecc71;
+    font-size: 0.85em;
+  }
+  .final-result {
+    text-align: center;
+    font-size: 1.3em;
+    padding: 20px;
+  }
+  .hint-box {
+    background: rgba(255,215,0,0.15);
+    border: 1px solid gold;
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 0.9em;
+  }
+  .diff-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .diff-btn {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.25);
+    text-align: left;
+    padding: 14px;
+  }
+  .diff-btn:hover { background: rgba(0,198,255,0.3); }
+  .diff-btn.selected { background: linear-gradient(90deg,#00c6ff,#0072ff); border-color:#00c6ff; }
+  .diff-btn small { display:block; opacity:0.8; font-weight:normal; margin-top:4px; }
+  .nav-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .nav-arrow-btn {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 1em;
+    width: auto;
+  }
+  .nav-arrow-btn:hover { background: rgba(0,198,255,0.35); }
+  .nav-arrow-btn:disabled { opacity: 0.35; cursor: default; }
+  .nav-arrow-btn:disabled:hover { background: rgba(255,255,255,0.12); }
+  .home-btn {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 10px;
+    padding: 8px 14px;
+    width: auto;
+  }
+  .home-btn:hover { background: rgba(255,80,80,0.35); }
+  .mission-dots {
+    display: flex;
+    gap: 10px;
+  }
+  .mission-dot {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85em;
+    color: #fff;
+    cursor: pointer;
+  }
+  .mission-dot:hover { background: rgba(0,198,255,0.35); }
+  .mission-dot.active { background: linear-gradient(90deg,#00c6ff,#0072ff); border-color:#00c6ff; font-weight:bold; }
+  .mode-select-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .mode-btn {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.25);
+    text-align: left;
+    padding: 14px;
+  }
+  .mode-btn:hover { background: rgba(0,198,255,0.3); }
+  .mode-btn small { display:block; opacity:0.8; font-weight:normal; margin-top:4px; }
+  .arcade-hud {
+    display: flex;
+    justify-content: space-between;
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    padding: 8px 14px;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .arcade-target {
+    text-align: center;
+    font-size: 1.15em;
+    margin-bottom: 8px;
+    background: rgba(0,198,255,0.15);
+    border: 1px solid rgba(0,198,255,0.4);
+    border-radius: 10px;
+    padding: 8px;
+  }
+  #arcadeCanvas {
+    width: 100%;
+    display: block;
+    background: radial-gradient(circle at center, rgba(0,50,80,0.4), rgba(0,10,20,0.6));
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.2);
+    touch-action: none;
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+// ---------- DIFFICULTY SETTINGS ----------
+const difficulties = {
+  easy: { label: "🟢 ง่าย (Easy)", desc: "พลังงานเยอะ ใช้คำใบ้ได้ไม่จำกัด คะแนนปกติ", energy: 8, scoreMult: 1, hintsAllowed: true },
+  medium: { label: "🟡 ปานกลาง (Medium)", desc: "พลังงานปานกลาง ใช้คำใบ้ได้ คะแนน x1.5", energy: 5, scoreMult: 1.5, hintsAllowed: true },
+  hard: { label: "🔴 ยาก (Hard)", desc: "พลังงานน้อย ห้ามใช้คำใบ้ คะแนน x2", energy: 3, scoreMult: 2, hintsAllowed: false }
+};
+
+// ---------- GAME DATA ----------
+const missions = {
+  1: {
+    name: "ภารกิจที่ 1 — ห้องทดลองลึกลับ 🔬",
+    desc: "ตอบคำถามวิทยาศาสตร์ให้ถูกต้อง 5 ข้อ เพื่อเปิดประตูห้องทดลอง",
+    questions: [
+      { q: "น้ำมีสูตรเคมีว่าอะไร?", options: ["CO2","H2O","O2","NaCl"], answer: 1, hint: "ประกอบด้วยไฮโดรเจนกับออกซิเจน" },
+      { q: "แรงที่ดึงดูดวัตถุลงสู่พื้นโลกเรียกว่าอะไร?", options: ["แรงเสียดทาน","แรงแม่เหล็ก","แรงโน้มถ่วง","แรงลอยตัว"], answer: 2, hint: "ทำให้แอปเปิลตกจากต้นไม้" },
+      { q: "ดาวเคราะห์ที่อยู่ใกล้ดวงอาทิตย์ที่สุดคือ?", options: ["ศุกร์","พุธ","โลก","อังคาร"], answer: 1, hint: "ชื่อเดียวกับเทพเจ้าแห่งการสื่อสาร" },
+      { q: "อวัยวะใดทำหน้าที่สูบฉีดเลือด?", options: ["ปอด","ตับ","หัวใจ","ไต"], answer: 2, hint: "เต้นตลอดเวลาในอกซ้าย" },
+      { q: "แสงเดินทางเร็วกว่าเสียงหรือไม่?", options: ["เร็วกว่า","ช้ากว่า","เท่ากัน","ไม่แน่นอน"], answer: 0, hint: "ฟ้าแลบมาก่อนฟ้าร้องเสมอ" }
+    ]
+  },
+  2: {
+    name: "ภารกิจที่ 2 — ป่าพลังงาน 🌱",
+    desc: "ค้นหาคำตอบเกี่ยวกับสิ่งมีชีวิต เซลล์ และระบบนิเวศ เก็บคริสตัลพลังงานให้ได้ 3 ชิ้น",
+    questions: [
+      { q: "หน่วยที่เล็กที่สุดของสิ่งมีชีวิตคืออะไร?", options: ["อวัยวะ","เซลล์","เนื้อเยื่อ","ระบบ"], answer: 1, hint: "ทุกสิ่งมีชีวิตประกอบด้วยสิ่งนี้" },
+      { q: "พืชสร้างอาหารเองได้ด้วยกระบวนการใด?", options: ["การหายใจ","การสังเคราะห์แสง","การย่อยอาหาร","การคายน้ำ"], answer: 1, hint: "ต้องใช้แสงแดด น้ำ และคาร์บอนไดออกไซด์" },
+      { q: "ผู้ผลิตในระบบนิเวศคือสิ่งมีชีวิตกลุ่มใด?", options: ["สัตว์กินเนื้อ","พืช","เชื้อรา","แบคทีเรียย่อยสลาย"], answer: 1, hint: "สร้างพลังงานจากแสงอาทิตย์" },
+      { q: "สัตว์ที่กินทั้งพืชและสัตว์เรียกว่าอะไร?", options: ["สัตว์กินพืช","สัตว์กินเนื้อ","สัตว์กินทั้งพืชและสัตว์","ผู้ย่อยสลาย"], answer: 2, hint: "คำนี้ขึ้นต้นด้วย 'omni' ในภาษาอังกฤษ" }
+    ],
+    crystalsNeeded: 3
+  },
+  3: {
+    name: "ภารกิจที่ 3 — ห้องทดลองธาตุ ⚛️",
+    desc: "จับคู่ชื่อธาตุกับสัญลักษณ์ให้ถูกต้อง หากจับคู่ครบจะได้รับกุญแจทองคำ",
+    pairs: [
+      { name: "ไฮโดรเจน", symbol: "H" },
+      { name: "ออกซิเจน", symbol: "O" },
+      { name: "คาร์บอน", symbol: "C" },
+      { name: "ทองคำ", symbol: "Au" },
+      { name: "เหล็ก", symbol: "Fe" },
+      { name: "โซเดียม", symbol: "Na" }
+    ]
+  },
+  4: {
+    name: "ภารกิจสุดท้าย — ศึกนักวิทยาศาสตร์ 🧠",
+    desc: "ตอบคำถามระดับยาก 10 ข้อ เพื่อพิสูจน์ตัวเองว่าเป็นสุดยอดนักวิทยาศาสตร์",
+    questions: [
+      { q: "อะตอมประกอบด้วยอนุภาคใดบ้าง?", options: ["โปรตอน นิวตรอน อิเล็กตรอน","โปรตอน โฟตอน นิวตรอน","อิเล็กตรอน โฟตอน ควาร์ก","นิวตรอน โฟตอน ไอออน"], answer: 0, hint: "มี 3 อนุภาคหลักในอะตอม" },
+      { q: "กฎการเคลื่อนที่ข้อที่ 1 ของนิวตันเกี่ยวข้องกับอะไร?", options: ["ความเฉื่อย","แรงโน้มถ่วง","พลังงานจลน์","แรงเสียดทาน"], answer: 0, hint: "วัตถุที่หยุดนิ่งจะหยุดนิ่งต่อไป" },
+      { q: "DNA ย่อมาจากอะไร?", options: ["Deoxyribonucleic Acid","Dinucleic Acid","Diribo Acid","Dynamic Nuclear Acid"], answer: 0, hint: "เก็บข้อมูลทางพันธุกรรม" },
+      { q: "ก๊าซใดที่พืชดูดซับในการสังเคราะห์แสง?", options: ["ออกซิเจน","ไนโตรเจน","คาร์บอนไดออกไซด์","ไฮโดรเจน"], answer: 2, hint: "เป็นก๊าซที่มนุษย์หายใจออก" },
+      { q: "ความเร็วแสงในสุญญากาศมีค่าประมาณเท่าใด?", options: ["300,000 กม./วินาที","150,000 กม./วินาที","1,000,000 กม./วินาที","3,000 กม./วินาที"], answer: 0, hint: "ประมาณ 3x10^8 เมตร/วินาที" },
+      { q: "pH ของน้ำบริสุทธิ์มีค่าเท่าใด?", options: ["0","5","7","14"], answer: 2, hint: "เป็นค่ากลาง ไม่เป็นกรดหรือเบส" },
+      { q: "อวัยวะใดในร่างกายทำหน้าที่กรองเลือด?", options: ["ตับ","ไต","ม้าม","ปอด"], answer: 1, hint: "ผลิตปัสสาวะ" },
+      { q: "ทฤษฎีบิ๊กแบง (Big Bang) อธิบายเรื่องใด?", options: ["กำเนิดจักรวาล","วิวัฒนาการของสิ่งมีชีวิต","การเกิดแผ่นดินไหว","การเกิดฝนตก"], answer: 0, hint: "จุดเริ่มต้นของเอกภพ" },
+      { q: "ธาตุใดมีเลขอะตอมเท่ากับ 1?", options: ["ฮีเลียม","ไฮโดรเจน","ลิเทียม","คาร์บอน"], answer: 1, hint: "เบาที่สุดในตารางธาตุ" },
+      { q: "การแบ่งเซลล์แบบใดที่ทำให้ได้เซลล์ลูกที่มีโครโมโซมครึ่งหนึ่งของเซลล์แม่?", options: ["ไมโทซิส","ไมโอซิส","ฟิชชัน","บัดดิ้ง"], answer: 1, hint: "เกี่ยวข้องกับการสร้างเซลล์สืบพันธุ์" }
+    ]
+  }
+};
+
+const PRAISE_LINE = "เก่งจังเลยนักวิทยาศาสตร์ตัวน้อย";
+const SCOLD_LINE = "กลับไปตั้งใจเรียนเถอะ";
+
+// ---------- STATE ----------
+let state = {
+  screen: "start",
+  difficulty: "medium",
+  mission: 1,
+  score: 0,
+  energy: 5,
+  crystals: 0,
+  qIndex: 0,
+  missionCorrect: 0,
+  answered: false,
+  showHint: false,
+  matchSelectedLeft: null,
+  matchedPairs: [],
+  shuffledSymbols: [],
+  finalCorrect: 0,
+  finalTotal: 0
+};
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---------- VOICE ----------
+function speak(text) {
+  try {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = "th-TH";
+    utter.rate = 1;
+    utter.pitch = 1.1;
+    window.speechSynthesis.speak(utter);
+  } catch (e) { /* ignore if not supported */ }
+}
+
+function render() {
+  const app = document.getElementById("app");
+  let html = `<h1>🧪 SCIENCE ADVENTURE</h1><div class="subtitle">ผจญภัยโลกวิทยาศาสตร์</div>`;
+
+  if (state.screen !== "start" && state.screen !== "gameover" && state.screen !== "finalresult" && state.screen !== "arcade" && state.screen !== "arcaderesult") {
+    html += `<div class="hud">
+      <div>⭐ คะแนน: ${state.score}</div>
+      <div>❤️ พลังงาน: ${state.energy}</div>
+      <div>🔮 คริสตัล: ${state.crystals}</div>
+      <div>🚩 ด่าน: ${state.mission}/4</div>
+      <div>${difficulties[state.difficulty].label}</div>
+    </div>
+    <div class="nav-bar">
+      <button class="home-btn" onclick="goHome()">🏠 หน้าหลัก</button>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button class="nav-arrow-btn" onclick="gotoMission(state.mission - 1)" ${state.mission <= 1 ? "disabled" : ""}>◀</button>
+        <div class="mission-dots">
+          ${[1,2,3,4].map(n => `<div class="mission-dot ${n === state.mission ? "active" : ""}" onclick="gotoMission(${n})">${n}</div>`).join("")}
+        </div>
+        <button class="nav-arrow-btn" onclick="gotoMission(state.mission + 1)" ${state.mission >= 4 ? "disabled" : ""}>▶</button>
+      </div>
+    </div>`;
+  }
+
+  if (state.screen === "arcade" || state.screen === "arcaderesult") {
+    html += `<div class="nav-bar"><button class="home-btn" onclick="goHome()">🏠 หน้าหลัก</button><div></div></div>`;
+  }
+
+  if (state.screen === "start") {
+    html += renderStart();
+  } else if (state.screen === "quiz") {
+    html += renderQuiz();
+  } else if (state.screen === "match") {
+    html += renderMatch();
+  } else if (state.screen === "final") {
+    html += renderFinalQuiz();
+  } else if (state.screen === "finalresult") {
+    html += renderFinalResult();
+  } else if (state.screen === "gameover") {
+    html += renderGameOver();
+  } else if (state.screen === "missionclear") {
+    html += renderMissionClear();
+  } else if (state.screen === "arcade") {
+    html += renderArcade();
+  } else if (state.screen === "arcaderesult") {
+    html += renderArcadeResult();
+  }
+
+  app.innerHTML = html;
+
+  if (state.screen === "arcade") {
+    initArcadeCanvas();
+  }
+}
+
+function renderStart() {
+  const diffOptions = Object.keys(difficulties).map(key => {
+    const d = difficulties[key];
+    const sel = state.difficulty === key ? " selected" : "";
+    return `<button class="diff-btn${sel}" onclick="selectDifficulty('${key}')">${d.label}<small>${d.desc}</small></button>`;
+  }).join("");
+
+  return `
+    <div class="card center-text">
+      <div class="mission-title">🚀 ยินดีต้อนรับ นักวิทยาศาสตร์ฝึกหัด!</div>
+      <div class="mission-desc">
+        โลกวิทยาศาสตร์กำลังตกอยู่ในอันตราย คุณต้องผ่านภารกิจทั้งหมดเพื่อกอบกู้ห้องทดลอง<br><br>
+        🔬 ภารกิจที่ 1 — ห้องทดลองลึกลับ<br>
+        🌱 ภารกิจที่ 2 — ป่าพลังงาน<br>
+        ⚛️ ภารกิจที่ 3 — ห้องทดลองธาตุ<br>
+        🧠 ภารกิจสุดท้าย — ศึกนักวิทยาศาสตร์
+      </div>
+      <div style="text-align:left; font-weight:bold; margin-top:10px;">เลือกระดับความยาก:</div>
+      <div class="diff-grid">${diffOptions}</div>
+      <div style="text-align:left; font-weight:bold; margin-top:16px;">เลือกโหมดการเล่น:</div>
+      <div class="mode-select-row">
+        <button class="mode-btn" onclick="startGame()">📖 โหมดผจญภัย (ตอบคำถาม)<small>ผ่าน 4 ภารกิจตามเนื้อเรื่อง เน้นตอบคำถามและจับคู่</small></button>
+        <button class="mode-btn" onclick="startArcade()">🎮 โหมดเกมจับธาตุ (Arcade)<small>สัญลักษณ์ธาตุร่วงลงมา แตะให้ทันก่อนตกพื้น! เล่นสนุก ไม่ใช่แบบข้อสอบ</small></button>
+      </div>
+    </div>
+  `;
+}
+
+function selectDifficulty(key) {
+  state.difficulty = key;
+  render();
+}
+
+function startGame() {
+  const d = difficulties[state.difficulty];
+  state = { ...state, screen: "quiz", mission: 1, score: 0, energy: d.energy, crystals: 0, qIndex: 0, missionCorrect: 0, answered: false, showHint: false };
+  render();
+}
+
+function goHome() {
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  stopArcade();
+  state.screen = "start";
+  render();
+}
+
+// ================= ARCADE MODE (playable catch game) =================
+const arcadeElements = [
+  { name: "ไฮโดรเจน", symbol: "H" },
+  { name: "ออกซิเจน", symbol: "O" },
+  { name: "คาร์บอน", symbol: "C" },
+  { name: "ทองคำ", symbol: "Au" },
+  { name: "เหล็ก", symbol: "Fe" },
+  { name: "โซเดียม", symbol: "Na" },
+  { name: "ไนโตรเจน", symbol: "N" },
+  { name: "ฮีเลียม", symbol: "He" },
+  { name: "แคลเซียม", symbol: "Ca" },
+  { name: "โพแทสเซียม", symbol: "K" }
+];
+
+let arcade = {
+  running: false,
+  score: 0,
+  energy: 3,
+  timeLeft: 60,
+  target: null,
+  items: [],
+  lastSpawn: 0,
+  animId: null,
+  timerId: null,
+  canvas: null,
+  ctx: null,
+  speed: 1.4,
+  spawnInterval: 1300
+};
+
+function startArcade() {
+  const diffSpeed = { easy: 1.0, medium: 1.4, hard: 2.0 };
+  const diffEnergy = { easy: 6, medium: 3, hard: 2 };
+  const diffSpawn = { easy: 1500, medium: 1200, hard: 900 };
+  arcade.running = true;
+  arcade.score = 0;
+  arcade.energy = diffEnergy[state.difficulty];
+  arcade.timeLeft = 60;
+  arcade.items = [];
+  arcade.lastSpawn = 0;
+  arcade.speed = diffSpeed[state.difficulty];
+  arcade.spawnInterval = diffSpawn[state.difficulty];
+  pickNewTarget();
+  state.screen = "arcade";
+  render();
+}
+
+function pickNewTarget() {
+  arcade.target = arcadeElements[Math.floor(Math.random() * arcadeElements.length)];
+}
+
+function renderArcade() {
+  return `
+    <div class="card">
+      <div class="mission-title">🎮 โหมดเกมจับธาตุ (Arcade)</div>
+      <div class="mission-desc">แตะ/คลิกสัญลักษณ์ธาตุที่ตรงกับชื่อด้านบนก่อนที่มันจะตกถึงพื้น! ระวังอย่าแตะสัญลักษณ์ผิด</div>
+      <div class="arcade-hud">
+        <div>⭐ คะแนน: <span id="arcadeScoreEl">${arcade.score}</span></div>
+        <div>❤️ พลังงาน: <span id="arcadeEnergyEl">${arcade.energy}</span></div>
+        <div>⏱️ เวลา: <span id="arcadeTimeEl">${arcade.timeLeft}</span>s</div>
+      </div>
+      <div class="arcade-target" id="arcadeTargetEl">🎯 จับสัญลักษณ์ของ: <b>${arcade.target ? arcade.target.name : ""}</b></div>
+      <canvas id="arcadeCanvas" width="640" height="420"></canvas>
+      <div id="arcadeFeedback" class="feedback center-text"></div>
+    </div>
+  `;
+}
+
+function initArcadeCanvas() {
+  const canvas = document.getElementById("arcadeCanvas");
+  if (!canvas) return;
+  arcade.canvas = canvas;
+  arcade.ctx = canvas.getContext("2d");
+
+  function resize() {
+    const ratio = 420 / 640;
+    const dpr = window.devicePixelRatio || 1;
+    const cssWidth = canvas.clientWidth || canvas.parentElement.clientWidth;
+    const cssHeight = cssWidth * ratio;
+    canvas.style.height = cssHeight + "px";
+    canvas.width = Math.round(cssWidth * dpr);
+    canvas.height = Math.round(cssHeight * dpr);
+    arcade.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    arcade.cssWidth = cssWidth;
+    arcade.cssHeight = cssHeight;
+  }
+  resize();
+  window.addEventListener("resize", resize);
+
+  function pointerHandler(evt) {
+    if (!arcade.running) return;
+    evt.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const clientX = evt.clientX;
+    const clientY = evt.clientY;
+    const x = (clientX - rect.left) * (arcade.cssWidth / rect.width);
+    const y = (clientY - rect.top) * (arcade.cssHeight / rect.height);
+    handleArcadeTap(x, y);
+  }
+  canvas.style.cursor = "pointer";
+  canvas.addEventListener("pointerdown", pointerHandler);
+
+  if (arcade.timerId) clearInterval(arcade.timerId);
+  arcade.timerId = setInterval(() => {
+    arcade.timeLeft -= 1;
+    const t = document.getElementById("arcadeTimeEl");
+    if (t) t.textContent = arcade.timeLeft;
+    if (arcade.timeLeft <= 0) {
+      endArcade();
+    }
+  }, 1000);
+
+  if (arcade.animId) cancelAnimationFrame(arcade.animId);
+  arcade.lastSpawn = performance.now();
+  let lastTime = performance.now();
+  function loop(now) {
+    if (!arcade.running) return;
+    const dt = Math.min(now - lastTime, 50);
+    lastTime = now;
+
+    if (now - arcade.lastSpawn > arcade.spawnInterval) {
+      spawnArcadeItem();
+      arcade.lastSpawn = now;
+    }
+
+    updateArcadeItems(dt, arcade.cssHeight);
+    drawArcade(arcade.ctx);
+
+    arcade.animId = requestAnimationFrame(loop);
+  }
+  arcade.animId = requestAnimationFrame(loop);
+}
+
+function spawnArcadeItem() {
+  const w = arcade.cssWidth;
+  if (!w) return;
+  const useTarget = Math.random() < 0.4 || !arcade.items.some(it => it.symbol === arcade.target.symbol);
+  let el;
+  if (useTarget) {
+    el = arcade.target;
+  } else {
+    el = arcadeElements[Math.floor(Math.random() * arcadeElements.length)];
+  }
+  arcade.items.push({
+    symbol: el.symbol,
+    x: 30 + Math.random() * (w - 60),
+    y: -30,
+    r: 28,
+    vy: (0.06 + Math.random() * 0.03) * arcade.speed
+  });
+}
+
+function updateArcadeItems(dt, canvasHeight) {
+  for (let i = arcade.items.length - 1; i >= 0; i--) {
+    const it = arcade.items[i];
+    it.y += it.vy * dt;
+    if (it.y - it.r > canvasHeight) {
+      // Check against the CURRENT target, not a stale cached flag,
+      // since the target can change while this item was falling.
+      if (it.symbol === arcade.target.symbol) {
+        arcadeMiss();
+      }
+      arcade.items.splice(i, 1);
+    }
+  }
+}
+
+function drawArcade(ctx) {
+  ctx.clearRect(0, 0, arcade.cssWidth, arcade.cssHeight);
+  arcade.items.forEach(it => {
+    ctx.beginPath();
+    ctx.arc(it.x, it.y, it.r, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(120,120,160,0.55)";
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "rgba(255,255,255,0.6)";
+    ctx.stroke();
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 16px Segoe UI";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(it.symbol, it.x, it.y);
+  });
+}
+
+// ---------- SOUND EFFECTS ----------
+let sharedAudioCtx = null;
+function getAudioCtx() {
+  try {
+    if (!sharedAudioCtx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      sharedAudioCtx = new AC();
+    }
+    if (sharedAudioCtx.state === "suspended") sharedAudioCtx.resume();
+    return sharedAudioCtx;
+  } catch (e) { return null; }
+}
+
+function playTone(freq, duration, type, volume) {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = type || "sine";
+  osc.frequency.value = freq;
+  gain.gain.value = volume != null ? volume : 0.2;
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  const now = ctx.currentTime;
+  gain.gain.setValueAtTime(gain.gain.value, now);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+  osc.start(now);
+  osc.stop(now + duration);
+}
+
+function playTapSound() {
+  playTone(500, 0.08, "square", 0.12);
+}
+
+function playHitSound() {
+  playTone(880, 0.12, "sine", 0.2);
+  setTimeout(() => playTone(1320, 0.12, "sine", 0.18), 90);
+}
+
+function playWrongSound() {
+  playTone(180, 0.25, "sawtooth", 0.2);
+}
+
+function handleArcadeTap(x, y) {
+  for (let i = arcade.items.length - 1; i >= 0; i--) {
+    const it = arcade.items[i];
+    const dist = Math.hypot(it.x - x, it.y - y);
+    if (dist <= it.r + 12) {
+      playTapSound();
+      if (it.symbol === arcade.target.symbol) {
+        arcadeHit();
+      } else {
+        arcadeWrong();
+      }
+      arcade.items.splice(i, 1);
+      return;
+    }
+  }
+}
+
+function arcadeFeedback(text, cls) {
+  const el = document.getElementById("arcadeFeedback");
+  if (el) el.innerHTML = `<span style="color:${cls}">${text}</span>`;
+}
+
+function arcadeHit() {
+  const mult = difficulties[state.difficulty].scoreMult;
+  arcade.score += Math.round(10 * mult);
+  const s = document.getElementById("arcadeScoreEl");
+  if (s) s.textContent = arcade.score;
+  playHitSound();
+  speak(PRAISE_LINE);
+  arcadeFeedback(`✅ ถูกต้อง! "${PRAISE_LINE}"`, "#2ecc71");
+  pickNewTarget();
+  const t = document.getElementById("arcadeTargetEl");
+  if (t) t.innerHTML = `🎯 จับสัญลักษณ์ของ: <b>${arcade.target.name}</b>`;
+}
+
+function arcadeWrong() {
+  arcade.energy -= 1;
+  const e = document.getElementById("arcadeEnergyEl");
+  if (e) e.textContent = arcade.energy;
+  playWrongSound();
+  speak(SCOLD_LINE);
+  arcadeFeedback(`❌ ผิด! "${SCOLD_LINE}"`, "#e74c3c");
+  if (arcade.energy <= 0) endArcade();
+}
+
+function arcadeMiss() {
+  arcade.energy -= 1;
+  const e = document.getElementById("arcadeEnergyEl");
+  if (e) e.textContent = arcade.energy;
+  playWrongSound();
+  speak(SCOLD_LINE);
+  arcadeFeedback(`⚠️ พลาด! สัญลักษณ์ตกพื้น "${SCOLD_LINE}"`, "#e74c3c");
+  if (arcade.energy <= 0) endArcade();
+}
+
+function stopArcade() {
+  arcade.running = false;
+  if (arcade.animId) cancelAnimationFrame(arcade.animId);
+  if (arcade.timerId) clearInterval(arcade.timerId);
+  arcade.animId = null;
+  arcade.timerId = null;
+}
+
+function endArcade() {
+  if (!arcade.running) return;
+  stopArcade();
+  state.screen = "arcaderesult";
+  render();
+}
+
+function renderArcadeResult() {
+  return `
+    <div class="card final-result">
+      <div style="font-size:2em; margin-bottom:10px;">🎮 จบเกม!</div>
+      <div class="mission-desc">คุณเล่นโหมดจับธาตุจบแล้ว</div>
+      <div class="badge">คะแนนที่ได้: ${arcade.score} ⭐ | ระดับ: ${difficulties[state.difficulty].label}</div>
+      <br><br>
+      <button class="btn-main" onclick="startArcade()">🔄 เล่นอีกครั้ง</button>
+      <button class="btn-main" onclick="goHome()">🏠 กลับหน้าหลัก</button>
+    </div>
+  `;
+}
+
+function gotoMission(n) {
+  if (n < 1 || n > 4) return;
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  state.mission = n;
+  state.qIndex = 0;
+  state.answered = false;
+  state.showHint = false;
+  state.missionCorrect = 0;
+  state.crystals = 0;
+
+  if (n === 3) {
+    setupMatchGame();
+    state.screen = "match";
+  } else if (n === 4) {
+    state.finalCorrect = 0;
+    state.finalTotal = 0;
+    state.screen = "final";
+  } else {
+    state.screen = "quiz";
+  }
+  render();
+}
+
+function renderQuiz() {
+  const m = missions[state.mission];
+  const q = m.questions[state.qIndex];
+  const total = m.questions.length;
+  const pct = Math.round((state.qIndex / total) * 100);
+  const hintsAllowed = difficulties[state.difficulty].hintsAllowed;
+
+  let optionsHtml = q.options.map((opt, i) => {
+    let cls = "option-btn";
+    if (state.answered) {
+      if (i === q.answer) cls += " correct";
+      else if (i === state.selectedIndex) cls += " wrong";
+    }
+    return `<button class="${cls}" ${state.answered ? "disabled" : ""} onclick="answerQuestion(${i})">${opt}</button>`;
+  }).join("");
+
+  let feedback = "";
+  if (state.answered) {
+    if (state.selectedIndex === q.answer) {
+      feedback = `<div class="feedback" style="color:#2ecc71;">✅ ถูกต้อง! +${Math.round(10*difficulties[state.difficulty].scoreMult)} คะแนน</div>
+      <div class="speech-bubble speech-good">🗣️ "${PRAISE_LINE}"</div>`;
+    } else {
+      feedback = `<div class="feedback" style="color:#e74c3c;">❌ ผิด! เสียพลังงาน 1 หน่วย (คำตอบคือ: ${q.options[q.answer]})</div>
+      <div class="speech-bubble speech-bad">🗣️ "${SCOLD_LINE}"</div>`;
+    }
+  }
+
+  let hintHtml = "";
+  if (state.showHint && !state.answered) {
+    hintHtml = `<div class="hint-box">💡 คำใบ้: ${q.hint}</div>`;
+  }
+
+  return `
+    <div class="card">
+      <div class="mission-title">${m.name}</div>
+      <div class="mission-desc">${m.desc}</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div style="margin:14px 0; font-size:1.05em;"><b>คำถามที่ ${state.qIndex + 1}/${total}:</b><br>${q.q}</div>
+      ${optionsHtml}
+      ${hintHtml}
+      ${feedback}
+      <div class="nav-grid" style="margin-top:14px;">
+        ${!state.answered && hintsAllowed ? `<button class="btn-main" style="grid-column: span 2;" onclick="toggleHint()">💡 ใช้คำใบ้</button>` : ""}
+        ${!state.answered && !hintsAllowed ? `<div style="grid-column: span 2; text-align:center; opacity:0.7; font-size:0.85em;">🔴 โหมดยาก: ไม่สามารถใช้คำใบ้ได้</div>` : ""}
+        ${state.answered ? `<button class="btn-main" style="grid-column: span 2;" onclick="nextQuestion()">➡️ ถัดไป</button>` : ""}
+      </div>
+    </div>
+  `;
+}
+
+function toggleHint() {
+  if (!difficulties[state.difficulty].hintsAllowed) return;
+  state.showHint = !state.showHint;
+  render();
+}
+
+function answerQuestion(i) {
+  if (state.answered) return;
+  const m = missions[state.mission];
+  const q = m.questions[state.qIndex];
+  state.answered = true;
+  state.selectedIndex = i;
+  const mult = difficulties[state.difficulty].scoreMult;
+  if (i === q.answer) {
+    state.score += Math.round(10 * mult);
+    state.missionCorrect += 1;
+    if (state.mission === 2) state.crystals += 1;
+    speak(PRAISE_LINE);
+  } else {
+    state.energy -= 1;
+    speak(SCOLD_LINE);
+  }
+  render();
+
+  if (state.energy <= 0) {
+    setTimeout(() => { state.screen = "gameover"; render(); }, 1200);
+  }
+}
+
+function nextQuestion() {
+  const m = missions[state.mission];
+  state.answered = false;
+  state.showHint = false;
+
+  const missionDone =
+    (state.mission === 1 && state.qIndex + 1 >= m.questions.length) ||
+    (state.mission === 2 && (state.crystals >= 3 || state.qIndex + 1 >= m.questions.length));
+
+  if (missionDone) {
+    if (state.mission === 2 && state.crystals < 3) {
+      state.screen = "gameover";
+      render();
+      return;
+    }
+    state.screen = "missionclear";
+    render();
+    return;
+  }
+
+  state.qIndex += 1;
+  render();
+}
+
+function renderMissionClear() {
+  const m = missions[state.mission];
+  let extra = "";
+  if (state.mission === 1) extra = "ประตูห้องทดลองเปิดออกแล้ว! 🚪✨";
+  if (state.mission === 2) extra = "คุณเก็บคริสตัลพลังงานครบ 3 ชิ้นแล้ว! 🔮🔮🔮";
+  if (state.mission === 3) extra = "คุณได้รับกุญแจทองคำแล้ว! 🗝️✨";
+
+  return `
+    <div class="card center-text">
+      <div class="mission-title">🎉 ผ่านด่านสำเร็จ!</div>
+      <div class="mission-desc">${m.name}<br>${extra}</div>
+      <div class="badge">คะแนนรวม: ${state.score} ⭐</div>
+      <br><br>
+      <button class="btn-main" onclick="goToNextMission()">🚪 ไปด่านถัดไป</button>
+    </div>
+  `;
+}
+
+function goToNextMission() {
+  state.mission += 1;
+  state.qIndex = 0;
+  state.answered = false;
+  state.showHint = false;
+  state.missionCorrect = 0;
+
+  if (state.mission === 3) {
+    setupMatchGame();
+    state.screen = "match";
+  } else if (state.mission === 4) {
+    state.finalCorrect = 0;
+    state.finalTotal = 0;
+    state.screen = "final";
+  } else {
+    state.screen = "quiz";
+  }
+  render();
+}
+
+// ---------- MATCH GAME (Mission 3) ----------
+function setupMatchGame() {
+  state.matchSelectedLeft = null;
+  state.matchedPairs = [];
+  state.shuffledSymbols = shuffle(missions[3].pairs.map(p => p.symbol));
+}
+
+function renderMatch() {
+  const m = missions[3];
+  const namesHtml = m.pairs.map((p, i) => {
+    const isMatched = state.matchedPairs.includes(p.name);
+    const isSelected = state.matchSelectedLeft === p.name;
+    let cls = "option-btn";
+    if (isMatched) cls += " matched";
+    else if (isSelected) cls += " selected";
+    return `<button class="${cls}" ${isMatched ? "disabled" : ""} onclick="selectName('${p.name}')">${p.name}</button>`;
+  }).join("");
+
+  const symbolsHtml = state.shuffledSymbols.map(sym => {
+    const owner = m.pairs.find(p => p.symbol === sym).name;
+    const isMatched = state.matchedPairs.includes(owner);
+    let cls = "option-btn";
+    if (isMatched) cls += " matched";
+    return `<button class="${cls}" ${isMatched ? "disabled" : ""} onclick="selectSymbol('${sym}')">${sym}</button>`;
+  }).join("");
+
+  return `
+    <div class="card">
+      <div class="mission-title">${m.name}</div>
+      <div class="mission-desc">${m.desc}</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${Math.round((state.matchedPairs.length / m.pairs.length) * 100)}%"></div></div>
+      <div class="match-grid" style="margin-top:14px;">
+        <div class="match-col"><b>ชื่อธาตุ</b>${namesHtml}</div>
+        <div class="match-col"><b>สัญลักษณ์</b>${symbolsHtml}</div>
+      </div>
+      <div id="matchFeedback"></div>
+    </div>
+  `;
+}
+
+function selectName(name) {
+  if (state.matchedPairs.includes(name)) return;
+  state.matchSelectedLeft = name;
+  render();
+}
+
+function selectSymbol(sym) {
+  if (!state.matchSelectedLeft) return;
+  const pair = missions[3].pairs.find(p => p.name === state.matchSelectedLeft);
+  const mult = difficulties[state.difficulty].scoreMult;
+  if (pair.symbol === sym) {
+    state.matchedPairs.push(pair.name);
+    state.score += Math.round(10 * mult);
+    state.matchSelectedLeft = null;
+    speak(PRAISE_LINE);
+    render();
+    if (state.matchedPairs.length >= missions[3].pairs.length) {
+      setTimeout(() => { state.screen = "missionclear"; render(); }, 900);
+    }
+  } else {
+    state.energy -= 1;
+    state.matchSelectedLeft = null;
+    speak(SCOLD_LINE);
+    render();
+    const fb = document.getElementById("matchFeedback");
+    if (fb) fb.innerHTML = `<div class="feedback" style="color:#e74c3c;">❌ จับคู่ผิด! เสียพลังงาน 1 หน่วย</div><div class="speech-bubble speech-bad">🗣️ "${SCOLD_LINE}"</div>`;
+    if (state.energy <= 0) {
+      setTimeout(() => { state.screen = "gameover"; render(); }, 1200);
+    }
+  }
+}
+
+// ---------- FINAL MISSION ----------
+function renderFinalQuiz() {
+  const m = missions[4];
+  const q = m.questions[state.qIndex];
+  const total = m.questions.length;
+  const pct = Math.round((state.qIndex / total) * 100);
+  const hintsAllowed = difficulties[state.difficulty].hintsAllowed;
+
+  let optionsHtml = q.options.map((opt, i) => {
+    let cls = "option-btn";
+    if (state.answered) {
+      if (i === q.answer) cls += " correct";
+      else if (i === state.selectedIndex) cls += " wrong";
+    }
+    return `<button class="${cls}" ${state.answered ? "disabled" : ""} onclick="answerFinal(${i})">${opt}</button>`;
+  }).join("");
+
+  let feedback = "";
+  if (state.answered) {
+    feedback = state.selectedIndex === q.answer
+      ? `<div class="feedback" style="color:#2ecc71;">✅ ถูกต้อง!</div><div class="speech-bubble speech-good">🗣️ "${PRAISE_LINE}"</div>`
+      : `<div class="feedback" style="color:#e74c3c;">❌ ผิด! (คำตอบคือ: ${q.options[q.answer]})</div><div class="speech-bubble speech-bad">🗣️ "${SCOLD_LINE}"</div>`;
+  }
+
+  let hintHtml = "";
+  if (state.showHint && !state.answered) {
+    hintHtml = `<div class="hint-box">💡 คำใบ้: ${q.hint}</div>`;
+  }
+
+  return `
+    <div class="card">
+      <div class="mission-title">${m.name}</div>
+      <div class="mission-desc">${m.desc}</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div style="margin:14px 0; font-size:1.05em;"><b>คำถามที่ ${state.qIndex + 1}/${total}:</b><br>${q.q}</div>
+      ${optionsHtml}
+      ${hintHtml}
+      ${feedback}
+      <div class="nav-grid" style="margin-top:14px;">
+        ${!state.answered && hintsAllowed ? `<button class="btn-main" style="grid-column: span 2;" onclick="toggleHint()">💡 ใช้คำใบ้</button>` : ""}
+        ${!state.answered && !hintsAllowed ? `<div style="grid-column: span 2; text-align:center; opacity:0.7; font-size:0.85em;">🔴 โหมดยาก: ไม่สามารถใช้คำใบ้ได้</div>` : ""}
+        ${state.answered ? `<button class="btn-main" style="grid-column: span 2;" onclick="nextFinalQuestion()">➡️ ถัดไป</button>` : ""}
+      </div>
+    </div>
+  `;
+}
+
+function answerFinal(i) {
+  if (state.answered) return;
+  const q = missions[4].questions[state.qIndex];
+  state.answered = true;
+  state.selectedIndex = i;
+  state.finalTotal += 1;
+  const mult = difficulties[state.difficulty].scoreMult;
+  if (i === q.answer) {
+    state.score += Math.round(15 * mult);
+    state.finalCorrect += 1;
+    speak(PRAISE_LINE);
+  } else {
+    speak(SCOLD_LINE);
+  }
+  render();
+}
+
+function nextFinalQuestion() {
+  state.answered = false;
+  state.showHint = false;
+  if (state.qIndex + 1 >= missions[4].questions.length) {
+    state.screen = "finalresult";
+    render();
+    return;
+  }
+  state.qIndex += 1;
+  render();
+}
+
+function renderFinalResult() {
+  const pct = Math.round((state.finalCorrect / state.finalTotal) * 100);
+  let title, desc, retry = false;
+  if (pct >= 80) {
+    title = "🏆 MASTER SCIENTIST";
+    desc = "🎉 ภารกิจสำเร็จ! คุณได้พิสูจน์แล้วว่าคุณคือสุดยอดนักวิทยาศาสตร์!";
+  } else if (pct >= 60) {
+    title = "🥈 SCIENCE EXPERT";
+    desc = "เก่งมาก! คุณผ่านการทดสอบระดับผู้เชี่ยวชาญแล้ว";
+  } else {
+    title = "🔄 กลับไปฝึกฝนและลองใหม่";
+    desc = "อย่าเพิ่งท้อ! ฝึกฝนอีกนิดแล้วกลับมาพิสูจน์ฝีมืออีกครั้ง";
+    retry = true;
+  }
+
+  return `
+    <div class="card final-result">
+      <div style="font-size:2em; margin-bottom:10px;">${title}</div>
+      <div class="mission-desc">${desc}</div>
+      <div class="badge">คะแนนสุดท้าย: ${state.score} ⭐ | ถูก ${state.finalCorrect}/${state.finalTotal} (${pct}%) | ระดับ: ${difficulties[state.difficulty].label}</div>
+      <br><br>
+      ${retry
+        ? `<button class="btn-main" onclick="goToNextMission_retryFinal()">🔄 ลองภารกิจสุดท้ายอีกครั้ง</button>`
+        : ""
+      }
+      <button class="btn-main" onclick="startGame_resetToStart()">🎮 เริ่มเกมใหม่ทั้งหมด</button>
+    </div>
+  `;
+}
+
+function goToNextMission_retryFinal() {
+  state.qIndex = 0;
+  state.finalCorrect = 0;
+  state.finalTotal = 0;
+  state.answered = false;
+  state.showHint = false;
+  state.screen = "final";
+  render();
+}
+
+function startGame_resetToStart() {
+  state.screen = "start";
+  render();
+}
+
+function renderGameOver() {
+  return `
+    <div class="card center-text">
+      <div class="mission-title">💥 พลังงานหมด!</div>
+      <div class="mission-desc">ห้องทดลองยังไม่ปลอดภัย... ลองอีกครั้งนะ นักวิทยาศาสตร์!</div>
+      <div class="badge">คะแนนที่ทำได้: ${state.score} ⭐ | ระดับ: ${difficulties[state.difficulty].label}</div>
+      <br><br>
+      <button class="btn-main" onclick="startGame()">🔄 ลองใหม่ (ระดับเดิม)</button>
+      <button class="btn-main" onclick="startGame_resetToStart()">⚙️ เปลี่ยนระดับความยาก</button>
+    </div>
+  `;
+}
+
+render();
+</script>
+</body>
+</html>
